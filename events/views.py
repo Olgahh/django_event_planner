@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin, EventForm
-from .models import Event
+from .forms import UserSignup, UserLogin, EventForm, BookingForm
+from .models import Event, Booking
 from django.contrib import messages
 from datetime import datetime
 
 def home(request):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')
-    events = Event.objects.filter(datetime__gte=datetime.today()) #Show only upcoming and todays events
+    events = Event.objects.filter(datetime__gte=datetime.today()) #Show only upcoming and todays events gte:greater than or equal
     context={
     "events" :events
     }
@@ -25,7 +25,25 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
+def book_event(request, event_id):
+    booking = Booking.objects.all()
+    event = Event.objects.get(id=event_id)
+    form = BookingForm()
 
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booked_event = form.save(commit=False)
+            booked_event.event=event
+            booked_event.booker=request.user
+            booked_event = form.save()
+            messages.success(request,"You have successfully created a booking for this event.")
+            return redirect('event-detail', event_id)
+    context ={
+    "form":form,
+    "event":event
+    }
+    return render(request,"book_event.html", context)
 
 
 def event_list(request):
@@ -79,6 +97,9 @@ def event_update(request,event_id):
     "event": event
     }
     return render(request,"update.html", context)
+
+
+#Authentication views
 
 class Signup(View):
     form_class = UserSignup

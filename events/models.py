@@ -17,4 +17,20 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('event-detail', kwargs={'event_id': self.id})
-#
+
+    def available_seats(self):
+        tickets_booked =0
+        for ticket in self.Booking.all():
+            tickets_booked += ticket.tickets
+        return self.seats - tickets_booked
+
+    def is_full(self):
+        if self.available_seats == 0:
+            return True
+        else:
+            return False
+
+class Booking(models.Model):
+    booker = models.ForeignKey(User, on_delete=models.CASCADE, default = 1)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default = 1)
+    tickets = models.PositiveIntegerField()

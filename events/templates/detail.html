@@ -23,6 +23,14 @@
       {% if request.user == event.organizer %}
       <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
         {% endif %}
+      {% if event.is_full %}
+      <span class="d-inline-block" data-toggle="popover" data-content="No more seats available">
+        <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Disabled</button>
+      </span>
+      {% else %}
+      <a href="{% url 'book-event' event.id %}" class="btn btn-dark px-5 rounded-pill">Book</a>
+      {% endif %}
+
     </div>
 </div></div></div>
 </header>

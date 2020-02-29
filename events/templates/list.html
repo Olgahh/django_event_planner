@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<header class="masthead text-center">
-  <div class="masthead-content">
-    <div class="container">
-        <div class="jumbotron">
-          <h2 class="masthead-subheading mb-0  text-white">Event List</h2>
-      </div>
-    </div>
+
+  <header>
+    <div class="jumbotron jumbotron-fluid text-white text-center">
+  <div class="container">
+    <h1 class="display-4">Event List</h1>
   </div>
-<div class="container text-black">
+</div>
+  </header>
+<div class="container text-black py-5 text-center">
 <div class="list-group">
   {% for event in events %}
   <div class="card bg-light mb-3">
@@ -22,6 +22,7 @@
       <a href="{{event.get_absolute_url}}" class="btn btn-dark  btn-xl rounded-pill">View Details</a>
     </div>
   </div>
+  </div>
   {% endfor %}
-  </header>
+  </div>
 {% endblock %}
