@@ -1,10 +1,84 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin
+from .forms import UserSignup, UserLogin, EventForm
+from .models import Event
+from django.contrib import messages
+from datetime import datetime
 
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    events = Event.objects.filter(datetime__gte=datetime.today()) #Show only upcoming and todays events
+    context={
+    "events" :events
+    }
+    return render(request, 'home.html', context)
+
+
+def dashboard(request):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    users_events = Event.objects.filter(organizer = request.user)
+    context={
+    "users_events" :users_events
+    }
+    return render(request, 'dashboard.html', context)
+
+
+
+
+def event_list(request):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    today = datetime.today()
+    events = Event.objects.filter(datetime__gte = today)
+    context = {
+        "events" : events
+    }
+    return render(request,"list.html",context)
+
+
+def event_detail(request,event_id):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    event = Event.objects.get(id=event_id)
+    context = {
+        "event" : event
+    }
+    return render(request,"detail.html",context)
+
+def create_event(request):
+    form = EventForm()
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            new_event = form.save(commit=False)
+            new_event.organizer=request.user
+            new_event = form.save()
+            messages.success(request,"You have successfully created an event.")
+            return redirect('dashboard')
+    context={
+    "form":form
+    }
+
+    return render(request,"create.html", context)
+
+def event_update(request,event_id):
+    event = Event.objects.get(id=event_id)
+    form=EventForm(instance=event)
+    if request.user == event.organizer:
+        if request.method == "POST":
+            form=EventForm(request.POST, request.FILES, instance=event)
+            if form.is_valid():
+                form.save()
+                messages.success(request,"You have successfully edited this event.")
+                return redirect('event-detail', event_id)
+    context={
+    "form":form,
+    "event": event
+    }
+    return render(request,"update.html", context)
 
 class Signup(View):
     form_class = UserSignup
@@ -46,11 +120,11 @@ class Login(View):
             if auth_user is not None:
                 login(request, auth_user)
                 messages.success(request, "Welcome Back!")
-                return redirect('dashboard')
+                return redirect('home')
             messages.warning(request, "Wrong email/password combination. Please try again.")
             return redirect("login")
         messages.warning(request, form.errors)
-        return redirect("login")
+        return redirect("dashboard")
 
 
 class Logout(View):
@@ -58,4 +132,3 @@ class Logout(View):
         logout(request)
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
-

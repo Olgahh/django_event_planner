@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="masthead text-center">
+  <div class="masthead-content">
+    <div class="container">
+        <div class="jumbotron text-white">More Details About</h1>
+          <h2 class="masthead-subheading mb-0">{{event.title}}</h2>
+      </div>
+    </div>
+  </div>
+<div class="container">
+<div class="card-group">
+  <div class="card">
+    {% if event.image %}
+    <img class="card-img-top" src="{{event.image.url}}" alt="Card image cap">
+    {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{{event.description}}</h5>
+      <p class="card-text">Location: {{event.location}}</p>
+      <p class="card-text">Seats Number: {{event.seats}}</p>
+      <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
+      {% if request.user == event.organizer %}
+      <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
+        {% endif %}
+    </div>
+</div></div></div>
+</header>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="masthead text-center">
+  <div class="masthead-content">
+    <div class="container">
+        <div class="jumbotron">
+          <h2 class="masthead-subheading mb-0  text-white">Event List</h2>
+      </div>
+    </div>
+  </div>
+<div class="container text-black">
+<div class="list-group">
+  {% for event in events %}
+  <div class="card bg-light mb-3">
+    <div class="card-header">
+      {{event.title}}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">When: {{event.datetime}}</h5>
+      <p class="card-text">{{event.description}}</p>
+      <a href="{{event.get_absolute_url}}" class="btn btn-dark  btn-xl rounded-pill">View Details</a>
+    </div>
+  </div>
+  {% endfor %}
+  </header>
+{% endblock %}
