@@ -19,16 +19,14 @@ class Event(models.Model):
         return reverse('event-detail', kwargs={'event_id': self.id})
 
     def available_seats(self):
-        tickets_booked =0
-        for ticket in self.Booking.all():
-            tickets_booked += ticket.tickets
+        tickets_booked =sum(Booking.objects.values_list('tickets', flat=True)) # will sum the number of booked tickets
         return self.seats - tickets_booked
 
-    def is_full(self):
-        if self.available_seats == 0:
-            return True
-        else:
-            return False
+    # def is_full(self):
+    #     if self.available_seats == 0:
+    #         return True
+    #     else:
+    #         return False
 
 class Booking(models.Model):
     booker = models.ForeignKey(User, on_delete=models.CASCADE, default = 1)

@@ -57,6 +57,15 @@ def event_list(request):
     return render(request,"list.html",context)
 
 
+# def booking_detail(request,event_id):
+#     if request.user.is_anonymous: #if the user is not logged go to the login page
+#         return redirect('login')
+#     ticket = Booking.objects.get(id=event_id)
+#     context = {
+#         "ticket" : ticket
+#     }
+#     return render(request,"book_event.html",context)
+
 def event_detail(request,event_id):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')

@@ -18,12 +18,13 @@
     <div class="card-body">
       <h5 class="card-title">{{event.description}}</h5>
       <p class="card-text">Location: {{event.location}}</p>
+      <p class="card-text">Seats Available: {{event.available_seats}}</p>
       <p class="card-text">Seats Number: {{event.seats}}</p>
       <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
       {% if request.user == event.organizer %}
       <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
         {% endif %}
-      {% if event.is_full %}
+      {% if event.available_seats <= 0 %}
       <span class="d-inline-block" data-toggle="popover" data-content="No more seats available">
         <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Disabled</button>
       </span>
@@ -33,5 +34,13 @@
 
     </div>
 </div></div></div>
+{% if request.user == event.organizer %}
+<ul class="list-group">
+<li class="list-group-item d-flex justify-content-between align-items-center">
+Who Booked: {{ticket.booker}}
+<span class="badge badge-primary badge-pill">{{ticket.tickets}}</span>
+</li>
+</ul>
+{% endif %}
 </header>
 {% endblock %}
