@@ -19,6 +19,9 @@ class Event(models.Model):
         return reverse('event-detail', kwargs={'event_id': self.id})
 
     def available_seats(self):
+        # if (Event.objects.values_list('seats', flat=True)) <= (Booking.objects.values_list('tickets', flat=True)):
+        #     return 0
+        # else:
         tickets_booked =sum(Booking.objects.values_list('tickets', flat=True)) # will sum the number of booked tickets
         return self.seats - tickets_booked
 
