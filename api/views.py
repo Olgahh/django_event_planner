@@ -50,9 +50,14 @@ class BookCreateView(CreateAPIView) :
         serializer.save(booker=self.request.user)
 
 # As an event organizer I can create/update an event.
-#??? Create Update Same Time
 class EventCreateView(CreateAPIView) :
     serializer_class = CreateSerializer
     permission_classes = [IsAuthenticated,IsOrganizer]
     def perform_create (self, serializer) :
         serializer.save(booker=self.request.user)
+class EventUpdateView(RetrieveUpdateAPIView):
+    queryset = Event.objects.all()
+    permission_classes = [IsAuthenticated,IsOrganizer]
+    serializer_class = CreateSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'event_id'

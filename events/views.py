@@ -26,6 +26,8 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 def book_event(request, event_id):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
     event = Event.objects.get(id=event_id)
     form = BookingForm()
 
@@ -70,6 +72,8 @@ def event_list(request):
 
 
 def event_detail(request,event_id):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
     event = Event.objects.get(id=event_id)
     context = {
         "event" : event
@@ -93,6 +97,8 @@ def create_event(request):
     return render(request,"create.html", context)
 
 def event_update(request,event_id):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
     event = Event.objects.get(id=event_id)
     form=EventForm(instance=event)
     if request.user == event.organizer:
@@ -155,7 +161,7 @@ class Login(View):
             messages.warning(request, "Wrong email/password combination. Please try again.")
             return redirect("login")
         messages.warning(request, form.errors)
-        return redirect("dashboard")
+        return redirect("login")
 
 
 class Logout(View):

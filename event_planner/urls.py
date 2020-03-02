@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 
-from api.views import RegisterView, UpcomingEventList, EventforSpecificOrganizerList, UserBookingList,BookCreateView, EventCreateView
+from api.views import RegisterView, UpcomingEventList, EventforSpecificOrganizerList, UserBookingList,BookCreateView, EventCreateView, EventUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,8 +32,9 @@ urlpatterns = [
     path('api/upcomingevent/list/', UpcomingEventList.as_view(), name='api-upcoming-list'),
     path('api/<str:organizer_username>/list', EventforSpecificOrganizerList.as_view(), name='api-organizer-list'),
     path('api/bookings/list/',  UserBookingList.as_view(), name='api-bookings-list'),
-    path('api/create/', BookCreateView.as_view(), name='api-event-create'),
-    path('api/create/update', EventCreateView.as_view(), name='api-event-create-update'),
+    path('api/create/booking', BookCreateView.as_view(), name='api-booking-create'),
+    path('api/create/event', EventCreateView.as_view(), name='api-event-create'),
+    path('api/update/<int:event_id>/event', EventUpdateView.as_view(), name='api-event-update'),
 
 
 ]
