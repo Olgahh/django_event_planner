@@ -4,7 +4,7 @@
 <header class="masthead text-center">
   <div class="masthead-content">
     <div class="container">
-        <div class="jumbotron text-white">More Details About</h1>
+        <div class="jumbotron text-white"><h1>More Details About</h1>
           <h2 class="masthead-subheading mb-0">{{event.title}}</h2>
       </div>
     </div>
@@ -19,31 +19,37 @@
       <h5 class="card-title">{{event.description}}</h5>
       <p class="card-text">Location: {{event.location}}</p>
       <p class="card-text">Seats Available: {{event.available_seats}}</p>
-      <p class="card-text">Seats Number: {{event.seats}}</p>
+      <p class="card-text">Total Number: {{event.seats}}</p>
       <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
       {% if request.user == event.organizer %}
-      <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Booked by:</th>
+            <th scope="col">Number of tickets</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for book in event.bookings.all %}
+          <tr>
+            <th scope="row">{{book.booker}}</th>
+            <td>{{book.tickets}}</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+      </table>
+          <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
         {% endif %}
-      {% if event.available_seats <= 0 %}
+      {% if event.available_seats > 0 %}
+        <a href="{% url 'book-event' event.id %}" class="btn btn-dark px-5 rounded-pill">Book</a>
+
+      {% else %}
       <span class="d-inline-block" data-toggle="popover" data-content="No more seats available">
         <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Disabled</button>
       </span>
-      {% else %}
-      <a href="{% url 'book-event' event.id %}" class="btn btn-dark px-5 rounded-pill">Book</a>
       {% endif %}
 
     </div>
 </div></div></div>
 
-<div class="container mt-3">
-{% if request.user == event.organizer %}
-<ul class="list-group">
-<li class="list-group-item d-flex justify-content-between align-items-center">
-Who Booked: {{ticket.booker}}
-<span class="badge badge-primary badge-pill">{{ticket.tickets}}</span>
-</li>
-</ul>
-{% endif %}
-</div>
-</header>
 {% endblock %}

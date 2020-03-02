@@ -36,6 +36,28 @@
     {% endfor %}
   </tbody>
 </table>
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">My booked event</th>
+      <th scope="col">Date/time</th>
+      <th scope="col">Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for booking in bookers %}
+    <tr>
+      <th scope="row">{{booking.event.title}}</th>
+      <td>{{booking.event.datetime}}</td>
+      <td>{{booking.event.location}}</td>
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+</table>
 </div>
 </header>
 <div class="bg-circle-1 bg-circle"></div>

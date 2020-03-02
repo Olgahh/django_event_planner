@@ -5,28 +5,27 @@ from .forms import UserSignup, UserLogin, EventForm, BookingForm
 from .models import Event, Booking
 from django.contrib import messages
 from datetime import datetime
+from django.db.models import Q
 
 def home(request):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')
-    events = Event.objects.filter(datetime__gte=datetime.today()) #Show only upcoming and todays events gte:greater than or equal
-    context={
-    "events" :events
-    }
-    return render(request, 'home.html', context)
+    return render(request, 'home.html')
 
 
 def dashboard(request):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')
     users_events = Event.objects.filter(organizer = request.user)
+    # users_events = request.user.events.all()
+    bookers = request.user.bookers.filter(event__datetime__lt=datetime.today())
     context={
-    "users_events" :users_events
+    "users_events" :users_events,
+    "bookers":bookers
     }
     return render(request, 'dashboard.html', context)
 
 def book_event(request, event_id):
-    booking = Booking.objects.all()
     event = Event.objects.get(id=event_id)
     form = BookingForm()
 
@@ -36,9 +35,13 @@ def book_event(request, event_id):
             booked_event = form.save(commit=False)
             booked_event.event=event
             booked_event.booker=request.user
-            booked_event = form.save()
-            messages.success(request,"You have successfully created a booking for this event.")
-            return redirect('event-detail', event_id)
+            seats = event.available_seats()
+            if booked_event.tickets <= seats :
+                booked_event.save()
+                messages.success(request,"You have successfully created a booking for this event.")
+                return redirect('event-detail', event_id)
+            else:
+                messages.warning(request,"Not enough seats to book.")
     context ={
     "form":form,
     "event":event
@@ -51,24 +54,22 @@ def event_list(request):
         return redirect('login')
     today = datetime.today()
     events = Event.objects.filter(datetime__gte = today)
+    query = request.GET.get("q")
+    if query:
+        events = events.filter(
+            Q(title__icontains=query)|
+            Q(description__icontains=query)|
+            Q(organizer__username__icontains=query)
+            ).distinct()
+
     context = {
         "events" : events
     }
     return render(request,"list.html",context)
 
 
-# def booking_detail(request,event_id):
-#     if request.user.is_anonymous: #if the user is not logged go to the login page
-#         return redirect('login')
-#     ticket = Booking.objects.get(id=event_id)
-#     context = {
-#         "ticket" : ticket
-#     }
-#     return render(request,"book_event.html",context)
 
 def event_detail(request,event_id):
-    if request.user.is_anonymous: #if the user is not logged go to the login page
-        return redirect('login')
     event = Event.objects.get(id=event_id)
     context = {
         "event" : event
@@ -82,7 +83,7 @@ def create_event(request):
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.organizer=request.user
-            new_event = form.save()
+            new_event.save()
             messages.success(request,"You have successfully created an event.")
             return redirect('dashboard')
     context={
@@ -162,3 +163,42 @@ class Logout(View):
         logout(request)
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
+
+
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from rest_framework.permissions import IsAuthenticated, IsAdminUser
+# class BookingView(APIView):
+# 	def get(self, request, booking_id=None):
+# 		if booking_id:
+# 			booking = Booking.objects.get(id=booking_id)
+# 			serializer = BookingSerializer(booking)
+# 			return Response(serializer.data)
+# 		bookings = Booking.objects.all()
+# 		serializer = BookingSerializer(bookings, many=True)
+# 		return Response(serializer.data)
+# 	def post(self, request, hotel_id):
+# 		self.permission_classes = [IsAuthenticated]
+# 		self.check_permissions(request)
+# 		serializer = BookingCreateSerializer(data=request.data)
+# 		if serializer.is_valid():
+# 			hotel = Hotel.objects.get(id=hotel_id)
+# 			serializer.save(hotel=hotel, user=request.user)
+# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# 	def put(self, request, booking_id):
+# 		self.permission_classes = [IsAuthenticated, IsBookingOwnerOrStaff]
+# 		booking = Booking.objects.get(id=booking_id)
+# 		self.check_object_permissions(request, booking)
+# 		serializer = BookingCreateSerializer(booking, data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data, status=status.HTTP_200_OK)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# 	def delete(self, request, booking_id):
+# 		self.permission_classes = [IsAuthenticated, IsAdminUser]
+# 		self.check_permissions(request)
+# 		booking = Booking.objects.get(id=booking_id)
+# 		booking.delete()
+# 		return Response(status=status.HTTP_204_NO_CONTENT)

@@ -9,7 +9,13 @@
   </div>
 </div>
   </header>
+
 <div class="container text-black py-5 text-center">
+  <!-- Search Field -->
+  <form action="{% url 'event-list' %}" method="GET" class="my-3">
+    <input type="text" name='q' placeholder="Search here..." value="{{request.GET.q}}">
+    <input type="submit" value="Search">
+</form>
 <div class="list-group">
   {% for event in events %}
   <div class="card bg-light mb-3">
@@ -22,7 +28,7 @@
       <a href="{{event.get_absolute_url}}" class="btn btn-dark  btn-xl rounded-pill">View Details</a>
     </div>
   </div>
-  </div>
   {% endfor %}
+  </div>
   </div>
 {% endblock %}

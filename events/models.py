@@ -4,12 +4,12 @@ from django.urls import reverse
 
 
 class Event(models.Model):
-    organizer = models.ForeignKey(User, on_delete=models.CASCADE, default = 1)
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, related_name='events')
     title = models.CharField(max_length=120)
     datetime = models.DateTimeField()
     description = models.TextField()
     location = models.CharField(max_length=120)
-    seats = models.PositiveIntegerField()
+    seats = models.IntegerField()
     image = models.ImageField(blank=True,null=True)
 
     def __str__(self):
@@ -18,20 +18,15 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('event-detail', kwargs={'event_id': self.id})
 
-    def available_seats(self):
-        # if (Event.objects.values_list('seats', flat=True)) <= (Booking.objects.values_list('tickets', flat=True)):
-        #     return 0
-        # else:
-        tickets_booked =sum(Booking.objects.values_list('tickets', flat=True)) # will sum the number of booked tickets
-        return self.seats - tickets_booked
+    def tickets_booked(self):
+        return sum(self.bookings.all().values_list('tickets', flat=True)) # will sum the number of booked ticket
 
-    # def is_full(self):
-    #     if self.available_seats == 0:
-    #         return True
-    #     else:
-    #         return False
+    def available_seats(self):
+        return self.seats - self.tickets_booked()
+
+
 
 class Booking(models.Model):
-    booker = models.ForeignKey(User, on_delete=models.CASCADE, default = 1)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, default = 1)
+    booker = models.ForeignKey(User, on_delete=models.CASCADE, default = 1,related_name="bookers" )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default = 1,related_name="bookings")
     tickets = models.PositiveIntegerField()
