@@ -4,52 +4,63 @@
 <header class="masthead text-center">
   <div class="masthead-content">
     <div class="container">
-        <div class="jumbotron text-white"><h1>More Details About</h1>
-          <h2 class="masthead-subheading mb-0">{{event.title}}</h2>
+        <div class="jumbotron">
+          <h2 class="masthead-subheading mb-0 text-white"><h6>More Details About</h6>
+            <h2 class="masthead-subheading mb-0 text-white">{{event.title}}</h2>
       </div>
     </div>
   </div>
-<div class="container">
-<div class="card-group">
-  <div class="card">
-    {% if event.image %}
-    <img class="card-img-top" src="{{event.image.url}}" alt="Card image cap">
-    {% endif %}
-    <div class="card-body">
-      <h5 class="card-title">{{event.description}}</h5>
-      <p class="card-text">Location: {{event.location}}</p>
-      <p class="card-text">Seats Available: {{event.available_seats}}</p>
-      <p class="card-text">Total Number: {{event.seats}}</p>
-      <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
-      {% if request.user == event.organizer %}
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Booked by:</th>
-            <th scope="col">Number of tickets</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for book in event.bookings.all %}
-          <tr>
-            <th scope="row">{{book.booker}}</th>
-            <td>{{book.tickets}}</td>
-          </tr>
-        </tbody>
-        {% endfor %}
-      </table>
-          <p><a href="{% url 'event-update' event.id %}" class="btn btn-dark px-5 rounded-pill">Edit</a></p>
+<div class="container text-center ">
+  <div class="card mb-3 " style="max-width: 1500px;">
+  <div class="row no-gutters text-center">
+    <div class="col-md-4">
+      {% if event.image %}
+      <img class="card-img-top" src="{{event.image.url}}" alt="Card image cap">
+      {% endif %}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{event.description}}</h5>
+        <p class="card-text">Location: {{event.location}}</p>
+        <p class="card-text">Seats Available: {{event.available_seats}}</p>
+        <p class="card-text">Total Number: {{event.seats}}</p>
+        <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
+        {% if request.user == event.organizer %}
+        <table class="table table-warning table-hover col-10">
+          <thead>
+            <tr>
+              <th scope="col">Booked by:</th>
+              <th scope="col">Number of tickets</th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for book in event.bookings.all %}
+            <tr>
+              <th scope="row">{{book.booker}}</th>
+              <td>{{book.tickets}}</td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+        </div>
+        <form class="form-inline-right" action="index.html" method="post">
+        <a href="{% url 'event-update' event.id %}" class="btn btn-lg btn-outline-danger px-5 m-3">Edit</a>
         {% endif %}
       {% if event.available_seats > 0 %}
-        <a href="{% url 'book-event' event.id %}" class="btn btn-dark px-5 rounded-pill">Book</a>
-
+        <a href="{% url 'book-event' event.id %}" class="btn btn-lg btn-outline-danger px-5 m-3 ">Book</a>
       {% else %}
       <span class="d-inline-block" data-toggle="popover" data-content="No more seats available">
-        <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Disabled</button>
+        <button class="btn btn-dark" style="pointer-events: none;" type="button" disabled>Disabled</button>
       </span>
       {% endif %}
-
+        </form>
+      </div>
     </div>
-</div></div></div>
+  </div>
+</div>
 
+<div class="bg-circle-4 bg-circle"></div>
+<div class="bg-circle-2 bg-circle"></div>
+<div class="bg-circle-3 bg-circle"></div>
+</header>
 {% endblock %}

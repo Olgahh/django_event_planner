@@ -1,34 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-  <header>
-    <div class="jumbotron jumbotron-fluid text-white text-center">
-  <div class="container">
-    <h1 class="display-4">Event List</h1>
+<header class="masthead text-center">
+  <div class="masthead-content">
+    <div class="container">
+        <div class="jumbotron">
+          <h2 class="masthead-subheading mb-0 text-white">Event List</h2>
+          <form action="{% url 'event-list' %}" method="GET" class=" my-2 my-lg-0">
+            <input type="text" name='q' placeholder="Search here..." value="{{request.GET.q}}">
+            <button class="btn btn-light my-2 mx-sm-1" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
-  </header>
 
+<div class="container">
 <div class="container text-black py-5 text-center">
-  <!-- Search Field -->
-  <form action="{% url 'event-list' %}" method="GET" class="my-3">
-    <input type="text" name='q' placeholder="Search here..." value="{{request.GET.q}}">
-    <input type="submit" value="Search">
-</form>
 <div class="list-group">
   {% for event in events %}
-  <div class="card bg-light mb-3">
-    <div class="card-header">
+  <div class="card mb-3" style="border-color: #ff9147">
+    <div class="card-header" style="border-color: #ff9147">
       {{event.title}}
     </div>
     <div class="card-body">
       <h5 class="card-title">When: {{event.datetime}}</h5>
       <p class="card-text">{{event.description}}</p>
-      <a href="{{event.get_absolute_url}}" class="btn btn-dark  btn-xl rounded-pill">View Details</a>
+      <a href="{{event.get_absolute_url}}" class="btn btn-block btn-xl rounded-pill my-5 text-white" style="background-color:tomato;">View Details</a>
     </div>
   </div>
   {% endfor %}
   </div>
   </div>
+  <div class="bg-circle-4 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  </header>
 {% endblock %}

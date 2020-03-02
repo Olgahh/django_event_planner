@@ -16,8 +16,8 @@ def home(request):
 def dashboard(request):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')
-    users_events = Event.objects.filter(organizer = request.user)
-    # users_events = request.user.events.all()
+    # users_events = Event.objects.filter(organizer = request.user)
+    users_events = request.user.events.all()
     bookers = request.user.bookers.filter(event__datetime__lt=datetime.today())
     context={
     "users_events" :users_events,
@@ -163,42 +163,3 @@ class Logout(View):
         logout(request)
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
-
-
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework import status
-# from rest_framework.permissions import IsAuthenticated, IsAdminUser
-# class BookingView(APIView):
-# 	def get(self, request, booking_id=None):
-# 		if booking_id:
-# 			booking = Booking.objects.get(id=booking_id)
-# 			serializer = BookingSerializer(booking)
-# 			return Response(serializer.data)
-# 		bookings = Booking.objects.all()
-# 		serializer = BookingSerializer(bookings, many=True)
-# 		return Response(serializer.data)
-# 	def post(self, request, hotel_id):
-# 		self.permission_classes = [IsAuthenticated]
-# 		self.check_permissions(request)
-# 		serializer = BookingCreateSerializer(data=request.data)
-# 		if serializer.is_valid():
-# 			hotel = Hotel.objects.get(id=hotel_id)
-# 			serializer.save(hotel=hotel, user=request.user)
-# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-# 	def put(self, request, booking_id):
-# 		self.permission_classes = [IsAuthenticated, IsBookingOwnerOrStaff]
-# 		booking = Booking.objects.get(id=booking_id)
-# 		self.check_object_permissions(request, booking)
-# 		serializer = BookingCreateSerializer(booking, data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data, status=status.HTTP_200_OK)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-# 	def delete(self, request, booking_id):
-# 		self.permission_classes = [IsAuthenticated, IsAdminUser]
-# 		self.check_permissions(request)
-# 		booking = Booking.objects.get(id=booking_id)
-# 		booking.delete()
-# 		return Response(status=status.HTTP_204_NO_CONTENT)
