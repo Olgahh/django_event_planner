@@ -28,7 +28,7 @@
     <tr>
       <td class="table-warning"><a href="{{event.get_absolute_url}}">{{event.title}}</a></td>
       <td>{{event.location}}</td>
-      <td>{{event.datetime}}</td>
+      <td>{{event.date}} - {{event.time}}</td>
       <td>{{event.seats}}</td>
     </tr>
     {% endfor %}
@@ -47,7 +47,7 @@
     {% for booking in bookers %}
     <tr>
       <th scope="row" class="table-warning">{{booking.event.title}}</th>
-      <td>{{booking.event.datetime}}</td>
+      <td>{{booking.event.date}} - {{booking.event.time}}</td>
       <td>{{booking.event.location}}</td>
     </tr>
     {% endfor %}

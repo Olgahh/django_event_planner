@@ -24,7 +24,7 @@
         <p class="card-text">Location: {{event.location}}</p>
         <p class="card-text">Seats Available: {{event.available_seats}}</p>
         <p class="card-text">Total Number: {{event.seats}}</p>
-        <p class="card-text"><small class="text-muted">Date/Time: {{event.datetime}}</small></p>
+        <p class="card-text"><small class="text-muted">Date/Time: {{event.date}} - {{event.time}}</small></p>
         {% if request.user == event.organizer %}
         <table class="table table-warning table-hover col-10">
           <thead>

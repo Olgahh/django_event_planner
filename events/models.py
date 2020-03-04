@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Event(models.Model):
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, related_name='events')
     title = models.CharField(max_length=120)
-    datetime = models.DateTimeField()
+    date= models.DateField(null=True)
+    time=models.TimeField(null=True)
     description = models.TextField()
     location = models.CharField(max_length=120)
     seats = models.IntegerField()

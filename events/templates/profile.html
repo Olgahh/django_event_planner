@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="jumbotron">
+  <h1 class="display-4">Profile</h1>
+  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+  <hr class="my-4">
+  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+  <a class="btn btn-primary btn-lg" href="{% url 'dashboard'%}" role="button">Dashboard</a>
+</div>
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{profile.img.url}}" class="card-img" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{profile.user}}</h5>
+        <p class="card-text"><h1>Bio:</h1><br>{{profile.bio}}</p>
+        <p class="card-text">Lives in: {{profile.location}}</p>
+        <p class="card-text"><small class="text-muted">Birthday:{{profile.birth_date}}</small></p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

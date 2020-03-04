@@ -18,7 +18,8 @@ def dashboard(request):
         return redirect('login')
     # users_events = Event.objects.filter(organizer = request.user)
     users_events = request.user.events.all()
-    bookers = request.user.bookers.filter(event__datetime__lt=datetime.today())
+    today = datetime.today()
+    bookers = request.user.bookers.filter(event__date__lt=today)
     context={
     "users_events" :users_events,
     "bookers":bookers
@@ -55,7 +56,7 @@ def event_list(request):
     if request.user.is_anonymous: #if the user is not logged go to the login page
         return redirect('login')
     today = datetime.today()
-    events = Event.objects.filter(datetime__gte = today)
+    events = Event.objects.filter(date__gte = today)
     query = request.GET.get("q")
     if query:
         events = events.filter(
@@ -81,9 +82,11 @@ def event_detail(request,event_id):
     return render(request,"detail.html",context)
 
 def create_event(request):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
     form = EventForm()
     if request.method == "POST":
-        form = EventForm(request.POST)
+        form = EventForm(request.POST,request.FILES)
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.organizer=request.user

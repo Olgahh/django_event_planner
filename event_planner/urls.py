@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 
-from api.views import RegisterView, UpcomingEventList, EventforSpecificOrganizerList, UserBookingList,BookCreateView, EventCreateView, EventUpdateView
+from api.views import BookerDetails,RegisterView, UpcomingEventList, EventforSpecificOrganizerList, UserBookingList,BookCreateView, EventCreateView, EventUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,11 +30,13 @@ urlpatterns = [
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('api/upcomingevent/list/', UpcomingEventList.as_view(), name='api-upcoming-list'),
-    path('api/<str:organizer_username>/list', EventforSpecificOrganizerList.as_view(), name='api-organizer-list'),
+    path('api/<str:organizer_username>/list/', EventforSpecificOrganizerList.as_view(), name='api-organizer-list'),
     path('api/bookings/list/',  UserBookingList.as_view(), name='api-bookings-list'),
-    path('api/create/booking', BookCreateView.as_view(), name='api-booking-create'),
-    path('api/create/event', EventCreateView.as_view(), name='api-event-create'),
-    path('api/update/<int:event_id>/event', EventUpdateView.as_view(), name='api-event-update'),
+    path('api/create/booking/', BookCreateView.as_view(), name='api-booking-create'),
+    path('api/create/event/', EventCreateView.as_view(), name='api-event-create'),
+    path('api/update/<int:event_id>/event/', EventUpdateView.as_view(), name='api-event-update'),
+    path('api/event/detail/<int:event_id>/', BookerDetails.as_view(), name='api-event-detail'),
+
 
 
 ]
