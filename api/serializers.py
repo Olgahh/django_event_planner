@@ -5,7 +5,7 @@ from events.models import Event, Booking
 class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id','organizer','title', 'description','datetime',]
+        fields = ['id','organizer','title', 'description','date','time',]
 
 class UserBookingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,7 +17,7 @@ class CreateBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         exclude = ['booker']
-
+############################################################
 class CreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event

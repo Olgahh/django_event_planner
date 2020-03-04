@@ -26,7 +26,7 @@ class UpcomingEventList(ListAPIView):
     permission_classes = [IsAuthenticated,]
     def get_queryset(self):
          today = datetime.today()
-         return Event.objects.filter(datetime__gte=today)
+         return Event.objects.filter(date__gte=today)
 
 #2 List of events for a specific organizer
 class EventforSpecificOrganizerList(ListAPIView):
