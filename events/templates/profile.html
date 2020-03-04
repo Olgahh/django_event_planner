@@ -13,20 +13,20 @@
 <div class="card mb-3" style="max-width: 540px;">
   <div class="row no-gutters">
     <div class="col-md-5">
-      {% if user.user_profile.img %}
-      <img src="{{user_profile.img.url}}" class="card-img" alt="...">
+      {% if user.profile.img %}
+      <img src="{{profile.img.url}}" class="card-img" alt="...">
       {% endif %}
     </div>
     <div class="col-md-7 mb-5">
       <div class="card-body">
-        <h5 class="card-title">Name: {{user.user_profile.user}}</h5>
-        <p class="card-text"><h1>Bio:</h1><br>{{user.user_profile.bio}}</p>
-        <p class="card-text"><small class="text-muted">Birthday:{{user.user_profile.dob}}</small></p>
+        <h5 class="card-title">Name: {{user.profile.get_name}}</h5>
+        <p class="card-text"><h1>Bio:</h1><br><p>{{user.profile.about_me}}</p>
+        <p class="card-text"><small class="text-muted">Birthday:{{user.profile.dob}}</small></p>
       </div>
     </div>
   </div>
   {% if request.user == user %}
-      <a href="{% url 'update-profile' request.user.id %}">
+      <a href="{% url 'profile-update'%}">
       <input class="btn btn btn-block btn-xl btn-light rounded-pill mt-5" type="submit" value="Update Profile">
       </a>
       {% endif %}
