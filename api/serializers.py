@@ -44,7 +44,8 @@ class EventBookersSerializer(serializers.ModelSerializer):
     booker = serializers.SerializerMethodField()
     class Meta:
         model = Event
-        fields = ['bookers']
-        def get_booker(self, obj):
-            bookings = obj.bookings.filter(booker=obj.booker)
-            return UserSerializer(bookings, many=True).data
+        fields = ['booker']
+    def get_booker(self, obj):
+        print(obj.id)
+        bookings = User.objects.filter(bookers__event=obj.id).distinct()
+        return UserSerializer(bookings, many=True).data

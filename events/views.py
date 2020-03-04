@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserSignup, UserLogin, EventForm, BookingForm
-from .models import Event, Booking
+from .models import Event, Booking, Profile
 from django.contrib import messages
 from datetime import datetime
 from django.db.models import Q
@@ -172,3 +172,33 @@ class Logout(View):
         logout(request)
         messages.success(request, "You have successfully logged out.")
         return redirect("login")
+
+def profile_view(request,user_id=None):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    user_profile =User.objects.get(id=user_id)
+    context = {
+        "user_profile" : user_profile
+    }
+    return render(request,"detail.html",context)
+
+
+def profile_update(request,user_id):
+    if request.user.is_anonymous: #if the user is not logged go to the login page
+        return redirect('login')
+    profile = Profile.objects.get(id=user_id)
+    form=ProfileForm(instance=profile)
+    if request.user == profile.user:
+        if request.method == "POST":
+            form=ProfileForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+                messages.success(request,"You have successfully updated your profile!")
+                return redirect('profile', user_id)
+    else:
+        return redirect('dashboard')
+    context={
+    "form":form,
+    "profile": profile
+    }
+    return render(request,"update_profile.html", context)

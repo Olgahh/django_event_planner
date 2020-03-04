@@ -71,3 +71,6 @@ class BookerDetails(RetrieveAPIView):
         permission_classes = [IsAuthenticated,IsOrganizer]
         def get_queryset(self):
             return  Event.objects.filter(organizer=self.request.user)
+# Following ModelSerializer
+# Follower User foreign key
+# following ... is the pesrson we need to follow  user.follower.all

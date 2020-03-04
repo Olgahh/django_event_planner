@@ -33,3 +33,18 @@ class Booking(models.Model):
     booker = models.ForeignKey(User, on_delete=models.CASCADE, default = 1,related_name="bookers" )
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default = 1,related_name="bookings")
     tickets = models.PositiveIntegerField()
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,  default = 1, related_name='profile')
+    img = models.ImageField(blank=True,null=True)
+    about_me = models.TextField(max_length=800, blank=True)
+    dob = models.DateField(null=True, blank=True)
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

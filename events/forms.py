@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Event, Booking
+from .models import Event, Booking, Profile
 
 class UserSignup(forms.ModelForm):
     class Meta:
@@ -30,3 +30,11 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['tickets']
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model= Profile
+        exclude = ['user']
+        widgets = {
+        'birth_date': forms.DateInput(attrs={'type': 'date'}),
+        }
